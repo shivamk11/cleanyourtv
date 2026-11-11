@@ -23,10 +23,14 @@
   <a href="docs/PRESS.md"><img src="docs/card.jpg" alt="457 TV models · 122 brands · 31 languages · 572 KB launcher. Featured in TechCrunch, TechRadar, Tom's Guide, Mashable, Android Authority, XDA, FlatpanelsHD, It's FOSS, Phandroid, GIGAZINE, Xataka, WinFuture, Frandroid, Macitynet, Techaeris, TechPP and 396 more: 412 articles from 54 countries. Before: stock Google TV home with a sponsored ad. After: the Clean Your TV launcher." width="800"></a>
 </p>
 
+> [!IMPORTANT]
+> **Amazon Fire TV Edition:** Looking for zero-latency native Home replacement, complete 14-grid Amazon Settings menu access, 60-second boot fix, and all-in-one wireless debloat? See the **[Amazon Fire TV Native Setup Guide](docs/devices/amazon-fire-tv-native-home.md)** or run `./tools/firetv/setup.sh <TV_IP>`. All exploit binaries, debloat profiles, and APKs are bundled directly in this repository—no external downloads or OTG cables required.
+
 ## Start here
 
 | You have | Go to |
 |---|---|
+| **An Amazon Fire TV Stick (Fire OS 6 / 7 / 8)** | **[Fire TV All-in-One Guide](docs/devices/amazon-fire-tv-native-home.md)**: Zero-latency Home button, complete 14-grid Amazon Settings, automated 1-line script (`./tools/firetv/setup.sh`). |
 | **An Android TV or Google TV** | [Quick start](#quick-start): a coding assistant does the work in about fifteen minutes. |
 | **A Samsung, LG, Roku, Vizio or Hisense VIDAA TV** | [cleanyour.tv/not-android](https://cleanyour.tv/not-android): CleanYourTV can't run there, but you can turn off the tracking with your remote. |
 | **A phone or laptop, no coding agent** | One of the [community apps](https://cleanyour.tv/app) for Android phones, Mac and Windows, made by independent developers. |
