@@ -134,7 +134,11 @@ if [ "$BOARD" = "mantis" ] || [ "$SDK" -le 25 ]; then
     APK="$SCRIPT_DIR/bin/fireos6/cleanyourtv-mantis.apk"
     SRC_DIR="$REPO_ROOT/launcher-mantis"
 else
-    DEBLOAT_PROFILE="$SCRIPT_DIR/profiles/sheldon_lite_fireos7.txt"
+    if [ "$BOARD" = "kara" ] && [ -f "$SCRIPT_DIR/profiles/kara_4kmax_fireos7.txt" ]; then
+        DEBLOAT_PROFILE="$SCRIPT_DIR/profiles/kara_4kmax_fireos7.txt"
+    else
+        DEBLOAT_PROFILE="$SCRIPT_DIR/profiles/sheldon_lite_fireos7.txt"
+    fi
     GL_BIN="$SCRIPT_DIR/bin/fireos7/ghostlock_root"
     GL_CONF=""
     APK="$SCRIPT_DIR/bin/fireos7/cleanyourtv-kara.apk"

@@ -1,0 +1,40 @@
+# kara_4kmax_fireos7.txt
+# CleanYourTV Synchronized Debloat Profile
+# Generated & verified against upstream examples/amazon-fire-tv-stick-4k-max-2021
+
+# --- Telemetry, Metrics & Crash Logging ---
+com.amazon.ceviche
+com.amazon.client.metrics.api
+com.amazon.dp.logger
+com.amazon.tv.developer.dataservice
+com.amazon.tv.fw.metrics
+com.amazon.wifilocker
+com.amazon.wirelessmetrics.service
+
+# --- Advertising, Recommendations & Promos ---
+com.amazon.hybridadidservice
+com.amazon.kso.blackbird
+com.amazon.sneakpeek
+com.amazon.tv.easyupgrade
+
+# --- Amazon Background Services & Unneeded Daemons ---
+com.amazon.bueller.music
+com.amazon.bueller.photos
+com.amazon.franktvinput
+com.amazon.gamehub
+com.amazon.hedwig
+com.amazon.livedeviceservice
+com.amazon.perfc
+com.amazon.perfcollection
+com.amazon.privacypassservice
+com.amazon.providers.contentsupport
+com.amazon.shoptv.client
+com.amazon.shoptv.firetv.client
+com.amazon.systemnotices
+com.amazon.tahoe
+com.amazon.tmm.tutorial
+com.amazon.tv.acr
+com.amazon.tv.livetv
+com.amazon.tv.releasenotes
+com.amazon.uxnotification
+

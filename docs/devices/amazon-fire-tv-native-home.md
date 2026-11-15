@@ -243,3 +243,15 @@ Press Home button:
 adb -s <TV_IP>:5555 shell "input keyevent 3"
 ```
 CleanYourTV appears immediately on your television screen.
+
+---
+
+## Keeping Up to Date with Upstream CleanYourTV
+
+To synchronize future upstream features, widgets, translations, and debloat lists seamlessly without breaking Fire OS modifications:
+
+```bash
+./tools/sync-upstream.sh
+```
+
+See [docs/UPSTREAM_SYNC.md](../UPSTREAM_SYNC.md) for full architecture details.
