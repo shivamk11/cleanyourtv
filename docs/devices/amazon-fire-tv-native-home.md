@@ -139,16 +139,22 @@ With `WRITE_SECURE_SETTINGS` granted, the boot animation exits the instant Clean
 
 ---
 
-## 6. Fire TV Stick UI Customizations
+## 6. Device-Isolated Launcher Architecture
 
-### Clean Top Bar (Inputs Pill Removed)
-Fire TV Sticks are HDMI sources that plug into TVs; they are not displays with multiple HDMI inputs. CleanYourTV Fire TV Edition sets `<bool name="show_inputs_pill">false</bool>` in `launcher/app/src/main/res/values/config.xml`, removing the unused "Inputs" pill from the top navigation bar.
+To maintain strict cleanliness, zero upstream bloat, and total isolation between device workarounds, this repository maintains separate, purpose-built launcher variants:
 
-### API 25 Compatibility & Core Library Desugaring
-Upstream CleanYourTV targets Android API 26+. To support Fire OS 6 (`mantis`, Android 7.1.2 / API 25), the launcher is compiled with:
-- `minSdk 25`
-- Java 8 API desugaring (`coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"`)
-- SDK version checks for API 26+ methods (e.g. `PackageManager.getChangedPackages()`).
+| Variant | Source Folder | Min SDK | Workarounds & Special Features | Target Devices |
+| :--- | :--- | :--- | :--- | :--- |
+| **`generic-tv`** | `launcher/` | API 26 | 100% Upstream CleanYourTV, Inputs Tab **Enabled**, standard OEM settings | Sony Bravia, TCL, Hisense, Philips TV sets |
+| **`generic-box`** | `launcher/` | API 26 | 100% Upstream CleanYourTV, Inputs Tab **Hidden**, standard Android TV settings | Nvidia Shield, Chromecast with Google TV, Onn Box |
+| **`kara`** | `launcher-kara/` | API 28 | Native API 28 (no desugaring), 60s boot fix, full 14-grid Amazon Settings, Inputs Tab **Hidden** | Fire TV Stick 4K Max 1st Gen, Fire TV Stick Lite / 3rd Gen (Fire OS 7+) |
+| **`mantis`** | `launcher-mantis/` | API 25 | API 25 compatibility, Java 8 `desugar_jdk_libs`, API 26+ method guards, 60s boot fix, full Amazon Settings, Inputs Tab **Hidden** | Fire TV Stick 4K 1st Gen (Fire OS 6) |
+
+### Smart Device Probe & Installer (`tools/install.sh`)
+The universal installer (`./tools/install.sh <IP>`) automatically probes the connected device before installing:
+1. **Inputs Tab Detection:** Probes hardware inputs via `dumpsys tv_input` and `ro.build.characteristics`. If the device is a streaming stick or box without physical HDMI inputs, it deploys the box build without the inputs tab. If it is a native TV, it enables the inputs tab.
+2. **Platform Isolation:** Detects whether the device is Fire OS vs Standard Android TV / Google TV. Fire TV specific changes (GhostLock, `HomeActivity_vNext` disabling, `bootanim.real_home_ready`, OTA blocking) are strictly isolated and **NEVER** applied to standard Android TV or Google TV devices.
+3. **Build Automation:** Run `./tools/build-launcher.sh [target]` to recompile any or all variants on demand.
 
 ---
 

@@ -5,6 +5,14 @@ launcher/.gradle/
 launcher/build/
 launcher/app/build/
 launcher/local.properties
+launcher-kara/.gradle/
+launcher-kara/build/
+launcher-kara/app/build/
+launcher-kara/local.properties
+launcher-mantis/.gradle/
+launcher-mantis/build/
+launcher-mantis/app/build/
+launcher-mantis/local.properties
 # your own TV's dumps (serial, android_id, device names) stay local
 backup/
 # session screenshots and working notes (may show the Wi-Fi name or account avatar) stay local
@@ -18,7 +26,8 @@ bench-results/
 
 # Generated install bundles and JVM crash reports stay out of contributions.
 *.apk
-!launcher/cleanyourtv-release.apk
+!dist/*.apk
+!tools/firetv/bin/**/*.apk
 *.aab
 launcher/hs_err_pid*.log
 launcher/replay_pid*.log

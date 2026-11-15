@@ -108,9 +108,20 @@ fi
 
 MODEL=$(adb -s "$TARGET" shell getprop ro.product.model 2>/dev/null | tr -d '\r')
 BOARD=$(adb -s "$TARGET" shell getprop ro.product.name 2>/dev/null | tr -d '\r')
+BRAND=$(adb -s "$TARGET" shell getprop ro.product.brand 2>/dev/null | tr -d '\r')
 FIREOS=$(adb -s "$TARGET" shell getprop ro.build.version.name 2>/dev/null | tr -d '\r')
 SDK=$(adb -s "$TARGET" shell getprop ro.build.version.sdk 2>/dev/null | tr -d '\r')
 BUILD_INC=$(adb -s "$TARGET" shell getprop ro.build.version.incremental 2>/dev/null | tr -d '\r')
+
+# Safety check: Prevent running Fire TV root and component disabling on non-Fire TV devices
+if [ "$BRAND" != "Amazon" ] && ! echo "$FIREOS" | grep -qi "Fire OS"; then
+    echo "ERROR: Target device '$BRAND $MODEL' is NOT an Amazon Fire TV device." >&2
+    echo "Fire TV specific root exploits and package modifications must not be applied to standard Android TV." >&2
+    echo "Please use the universal installer instead:" >&2
+    echo "  ./tools/install.sh $TV_HOST" >&2
+    exit 1
+fi
+
 echo "Connected: $MODEL ($BOARD) running $FIREOS (Android API $SDK, build $BUILD_INC)"
 
 # Determine device family & binary profiles
@@ -120,10 +131,14 @@ if [ "$BOARD" = "mantis" ] || [ "$SDK" -le 25 ]; then
     DEBLOAT_PROFILE="$SCRIPT_DIR/profiles/mantis_4k_fireos6.txt"
     GL_BIN="$SCRIPT_DIR/bin/fireos6/ghostlock_root"
     GL_CONF="$SCRIPT_DIR/bin/fireos6/mantis-NS6711-5908.conf"
+    APK="$SCRIPT_DIR/bin/fireos6/cleanyourtv-mantis.apk"
+    SRC_DIR="$REPO_ROOT/launcher-mantis"
 else
     DEBLOAT_PROFILE="$SCRIPT_DIR/profiles/sheldon_lite_fireos7.txt"
     GL_BIN="$SCRIPT_DIR/bin/fireos7/ghostlock_root"
     GL_CONF=""
+    APK="$SCRIPT_DIR/bin/fireos7/cleanyourtv-kara.apk"
+    SRC_DIR="$REPO_ROOT/launcher-kara"
 fi
 
 # 2. Check and initialize root access
@@ -158,16 +173,15 @@ else
 fi
 
 # 3. Prepare Launcher APK
-APK="$REPO_ROOT/launcher/cleanyourtv-release.apk"
 if [ "$MODE" = "full" ] || [ "$MODE" = "launcher" ]; then
-    echo "[3/6] Preparing CleanYourTV launcher binary..."
+    echo "[3/6] Preparing CleanYourTV launcher binary ($BOARD)..."
     if [ "$BUILD_SOURCE" -eq 1 ] || [ ! -f "$APK" ]; then
-        echo "Building CleanYourTV APK from source (minSdk 25, inputs disabled)..."
-        (cd "$REPO_ROOT/launcher" && ./gradlew assembleRelease -q)
-        APK="$REPO_ROOT/launcher/app/build/outputs/apk/release/app-release.apk"
+        echo "Building CleanYourTV APK from $SRC_DIR..."
+        (cd "$SRC_DIR" && ./gradlew assembleRelease -q)
+        cp "$SRC_DIR/app/build/outputs/apk/release/app-release.apk" "$APK"
     fi
 
-    echo "Pushing launcher APK to device..."
+    echo "Pushing launcher APK ($(basename "$APK")) to device..."
     adb -s "$TARGET" push "$APK" "$REMOTE_GL_DIR/cleanyourtv.apk" >/dev/null
 fi
 
