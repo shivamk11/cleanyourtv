@@ -4,37 +4,73 @@
 
 # --- Telemetry, Metrics & Crash Logging ---
 com.amazon.ceviche
+com.amazon.client.metrics
 com.amazon.client.metrics.api
+com.amazon.device.crashmanager
+com.amazon.device.logmanager
+com.amazon.device.metrics
 com.amazon.dp.logger
+com.amazon.logan
 com.amazon.tv.developer.dataservice
 com.amazon.tv.fw.metrics
 com.amazon.wifilocker
 com.amazon.wirelessmetrics.service
+com.fireos.usagestats.proxy
 
 # --- Advertising, Recommendations & Promos ---
 com.amazon.hybridadidservice
 com.amazon.kso.blackbird
 com.amazon.sneakpeek
 com.amazon.tv.easyupgrade
+com.amazon.whad
+
+# --- System Updates (OTA) ---
+com.amazon.device.software.ota.override
+
+# --- Alexa & Ambient Voice Services ---
+com.amazon.tv.alexaalerts
+com.amazon.tv.alexanotifications
+com.amazon.wha.mediabrowserservice
 
 # --- Amazon Background Services & Unneeded Daemons ---
+com.amazon.aca
+com.amazon.aiondec
+com.amazon.audiohome
 com.amazon.bueller.music
 com.amazon.bueller.photos
+com.amazon.cloud9
+com.amazon.csm.htmlruntime
+com.amazon.dummy.alarmclock
+com.amazon.dummy.calendar
+com.amazon.dummy.contacts
+com.amazon.dummy.gallery
+com.amazon.dummy.music
 com.amazon.franktvinput
 com.amazon.gamehub
 com.amazon.hedwig
+com.amazon.katoch
 com.amazon.livedeviceservice
+com.amazon.minitv.android.app
+com.amazon.neodelegate
 com.amazon.perfc
 com.amazon.perfcollection
 com.amazon.privacypassservice
 com.amazon.providers.contentsupport
+com.amazon.recess
 com.amazon.shoptv.client
 com.amazon.shoptv.firetv.client
+com.amazon.smarthomemapviewapp
+com.amazon.spiderpork
+com.amazon.stillwatching.activity
+com.amazon.storm.lightning.tutorial
 com.amazon.systemnotices
 com.amazon.tahoe
 com.amazon.tmm.tutorial
 com.amazon.tv.acr
 com.amazon.tv.livetv
+com.amazon.tv.oobe
 com.amazon.tv.releasenotes
 com.amazon.uxnotification
+com.android.nfc
+com.android.printspooler
 
