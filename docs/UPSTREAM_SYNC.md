@@ -93,6 +93,6 @@ Device: mantis_4k_fireos6.txt <-> amazon-fire-tv-stick-4k-2018
 ## 4. Automated GitHub Actions Sync
 
 A GitHub Actions workflow is available at [`.github/workflows/upstream-sync.yml`](../.github/workflows/upstream-sync.yml):
-- **Schedule**: Runs automatically every Monday at 04:00 UTC.
+- **Schedule**: Runs automatically **daily at 05:00 AM IST** (`30 23 * * *` UTC).
 - **Manual Trigger**: Can be dispatched on-demand from the GitHub Actions tab (`Run workflow`).
-- Automatically runs `sync-upstream.sh`, builds the APKs, and pushes updates.
+- Automatically runs `sync-upstream.sh`, syncs launcher code and debloat profiles, verifies the build, and pushes updates if changes are present.
