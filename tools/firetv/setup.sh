@@ -118,7 +118,7 @@ if [ "$BRAND" != "Amazon" ] && ! echo "$FIREOS" | grep -qi "Fire OS"; then
     echo "ERROR: Target device '$BRAND $MODEL' is NOT an Amazon Fire TV device." >&2
     echo "Fire TV specific root exploits and package modifications must not be applied to standard Android TV." >&2
     echo "Please use the universal installer instead:" >&2
-    echo "  ./tools/install.sh $TV_HOST" >&2
+    echo "  ./tools/firetv/install.sh $TV_HOST" >&2
     exit 1
 fi
 

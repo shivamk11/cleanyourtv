@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- On native Android TV / Google TV sets (Sony, TCL, Hisense, Philips), the TV Inputs pill is enabled -->
-    <bool name="show_inputs_pill">true</bool>
-</resources>

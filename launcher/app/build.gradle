@@ -17,16 +17,6 @@ android {
         versionName '3.5'
     }
 
-    flavorDimensions "formFactor"
-    productFlavors {
-        tv {
-            dimension "formFactor"
-        }
-        box {
-            dimension "formFactor"
-        }
-    }
-
     buildTypes {
         release {
             // R8 strips and optimises the code (AndroidX included): smaller APK, faster start on a slow TV CPU.

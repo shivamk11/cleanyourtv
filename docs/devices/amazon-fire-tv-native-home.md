@@ -150,11 +150,11 @@ To maintain strict cleanliness, zero upstream bloat, and total isolation between
 | **`kara`** | `launcher-kara/` | API 28 | Native API 28 (no desugaring), 60s boot fix, full 14-grid Amazon Settings, Inputs Tab **Hidden** | Fire TV Stick 4K Max 1st Gen, Fire TV Stick Lite / 3rd Gen (Fire OS 7+) |
 | **`mantis`** | `launcher-mantis/` | API 25 | API 25 compatibility, Java 8 `desugar_jdk_libs`, API 26+ method guards, 60s boot fix, full Amazon Settings, Inputs Tab **Hidden** | Fire TV Stick 4K 1st Gen (Fire OS 6) |
 
-### Smart Device Probe & Installer (`tools/install.sh`)
-The universal installer (`./tools/install.sh <IP>`) automatically probes the connected device before installing:
+### Smart Device Probe & Installer (`tools/firetv/install.sh`)
+The universal installer (`./tools/firetv/install.sh <IP>`) automatically probes the connected device before installing:
 1. **Inputs Tab Detection:** Probes hardware inputs via `dumpsys tv_input` and `ro.build.characteristics`. If the device is a streaming stick or box without physical HDMI inputs, it deploys the box build without the inputs tab. If it is a native TV, it enables the inputs tab.
 2. **Platform Isolation:** Detects whether the device is Fire OS vs Standard Android TV / Google TV. Fire TV specific changes (GhostLock, `HomeActivity_vNext` disabling, `bootanim.real_home_ready`, OTA blocking) are strictly isolated and **NEVER** applied to standard Android TV or Google TV devices.
-3. **Build Automation:** Run `./tools/build-launcher.sh [target]` to recompile any or all variants on demand.
+3. **Build Automation:** Run `./tools/firetv/build-launcher.sh [target]` to recompile any or all variants on demand.
 
 ---
 
@@ -251,7 +251,7 @@ CleanYourTV appears immediately on your television screen.
 To synchronize future upstream features, widgets, translations, and debloat lists seamlessly without breaking Fire OS modifications:
 
 ```bash
-./tools/sync-upstream.sh
+./tools/firetv/sync-upstream.sh
 ```
 
 See [docs/UPSTREAM_SYNC.md](../UPSTREAM_SYNC.md) for full architecture details.

@@ -16,7 +16,7 @@
 set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
-REPO_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
+REPO_ROOT=$(cd "$SCRIPT_DIR/../.." && pwd)
 TARGET="${1:-all}"
 
 export JAVA_HOME="${JAVA_HOME:-/opt/homebrew/Cellar/openjdk@17/17.0.21.0.3/libexec/openjdk.jdk/Contents/Home}"
@@ -24,15 +24,18 @@ mkdir -p "$REPO_ROOT/dist"
 
 build_generic_tv() {
     echo "==> Building CleanYourTV Generic TV (Native TV with HDMI Inputs)..."
-    (cd "$REPO_ROOT/launcher" && ./gradlew assembleTvRelease -q)
-    cp "$REPO_ROOT/launcher/app/build/outputs/apk/tv/release/app-tv-release.apk" "$REPO_ROOT/dist/cleanyourtv-generic-tv.apk"
+    (cd "$REPO_ROOT/launcher" && ./gradlew assembleRelease -q)
+    cp "$REPO_ROOT/launcher/app/build/outputs/apk/release/app-release.apk" "$REPO_ROOT/dist/cleanyourtv-generic-tv.apk"
     echo "✓ Built: dist/cleanyourtv-generic-tv.apk"
 }
 
 build_generic_box() {
     echo "==> Building CleanYourTV Generic Box (Streaming Box/Stick without HDMI Inputs)..."
-    (cd "$REPO_ROOT/launcher" && ./gradlew assembleBoxRelease -q)
-    cp "$REPO_ROOT/launcher/app/build/outputs/apk/box/release/app-box-release.apk" "$REPO_ROOT/dist/cleanyourtv-generic-box.apk"
+    CONFIG="$REPO_ROOT/launcher/app/src/main/res/values/config.xml"
+    sed -i.bak 's/<bool name="show_inputs_pill">true<\/bool>/<bool name="show_inputs_pill">false<\/bool>/' "$CONFIG"
+    (cd "$REPO_ROOT/launcher" && ./gradlew assembleRelease -q)
+    mv "${CONFIG}.bak" "$CONFIG"
+    cp "$REPO_ROOT/launcher/app/build/outputs/apk/release/app-release.apk" "$REPO_ROOT/dist/cleanyourtv-generic-box.apk"
     echo "✓ Built: dist/cleanyourtv-generic-box.apk"
 }
 

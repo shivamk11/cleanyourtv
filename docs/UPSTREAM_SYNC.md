@@ -14,15 +14,15 @@ Upstream `cleanyourtv` frequently updates launcher UI features, widgets, bug fix
 ├── launcher-mantis/        # Standalone Fire OS 6 (API 25) target with desugaring
 ├── examples/               # Upstream community debloat profiles for 480+ devices
 ├── tools/
-│   ├── firetv/             # Self-contained Fire TV root binaries, scripts, & profiles
+│   ├── firetv/             # Self-contained Fire TV toolchain & specialized builds
 │   │   ├── bin/            # Bundled GhostLock binaries & configs
 │   │   ├── profiles/       # Curated Fire TV debloat lists (Mantis, Kara, Sheldon)
 │   │   ├── setup.sh        # Fire TV zero-dependency installer
+│   │   ├── install.sh      # Universal smart hardware/OS probe installer
+│   │   ├── build-launcher.sh # Multi-target launcher builder (generic-tv, generic-box, kara, mantis)
+│   │   ├── sync-upstream.sh  # Master upstream synchronization CLI
 │   │   ├── sync_launchers.py # Automated launcher propagation script
 │   │   └── sync_debloat.py   # Automated debloat list sync script
-│   ├── build-launcher.sh   # Multi-target launcher builder (generic-tv, generic-box, kara, mantis)
-│   ├── install.sh          # Universal smart hardware/OS probe installer
-│   └── sync-upstream.sh    # All-in-one upstream synchronization tool
 ```
 
 ### Why this design eliminates merge conflicts
@@ -37,7 +37,7 @@ Upstream `cleanyourtv` frequently updates launcher UI features, widgets, bug fix
 To pull all upstream changes (launcher updates, debloat lists, bug fixes), run:
 
 ```bash
-./tools/sync-upstream.sh
+./tools/firetv/sync-upstream.sh
 ```
 
 ### What happens automatically:
@@ -52,7 +52,7 @@ To pull all upstream changes (launcher updates, debloat lists, bug fixes), run:
    - Merges newly discovered bloatware packages into `tools/firetv/profiles/`.
    - Categorizes them neatly into Telemetry, Ads, Sponsored Bloatware, and Services.
    - Enforces critical safety exclusions (e.g. keeping `com.amazon.tv.launcher` package enabled so the native 14-grid Settings hub is preserved).
-4. **Build Verification** (`tools/build-launcher.sh all`):
+4. **Build Verification** (`tools/firetv/build-launcher.sh all`):
    - Automatically compiles all 4 APK variants (`generic-tv`, `generic-box`, `kara`, `mantis`) to ensure zero build errors.
    - Stages release APKs into `dist/` and `tools/firetv/bin/`.
 
@@ -92,7 +92,7 @@ Device: mantis_4k_fireos6.txt <-> amazon-fire-tv-stick-4k-2018
 
 ## 4. Automated GitHub Actions Sync
 
-A GitHub Actions workflow is available at [`.github/workflows/upstream-sync.yml`](file:///.github/workflows/upstream-sync.yml):
+A GitHub Actions workflow is available at [`.github/workflows/upstream-sync.yml`](../.github/workflows/upstream-sync.yml):
 - **Schedule**: Runs automatically every Monday at 04:00 UTC.
 - **Manual Trigger**: Can be dispatched on-demand from the GitHub Actions tab (`Run workflow`).
 - Automatically runs `sync-upstream.sh`, builds the APKs, and pushes updates.

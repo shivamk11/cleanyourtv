@@ -50,7 +50,7 @@ jobs:
           if [ "${{ github.event.inputs.build_apks }}" = "false" ]; then
             BUILD_FLAG="--no-build"
           fi
-          ./tools/sync-upstream.sh --remote upstream --branch main $BUILD_FLAG
+          ./tools/firetv/sync-upstream.sh --remote upstream --branch main $BUILD_FLAG
 
       - name: Check for changes
         id: git_status

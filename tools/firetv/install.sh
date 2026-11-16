@@ -32,7 +32,7 @@ export MSYS_NO_PATHCONV=1
 export MSYS2_ARG_CONV_EXCL="*"
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
-REPO_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
+REPO_ROOT=$(cd "$SCRIPT_DIR/../.." && pwd)
 
 if [ $# -lt 1 ]; then
     echo "Usage: $0 <TV_IP_ADDRESS> [options]"
@@ -166,7 +166,7 @@ if [ "$IS_FIRETV" -eq 1 ]; then
     echo "=========================================================="
     echo " Delegating to specialized Fire TV setup toolchain..."
     echo "=========================================================="
-    exec "$SCRIPT_DIR/firetv/setup.sh" "$TARGET"
+    exec "$SCRIPT_DIR/setup.sh" "$TARGET"
 else
     echo "Deploying on standard Android TV / Google TV device..."
     echo "  (Fire TV specific hacks and root exploits are SKIPPED)"

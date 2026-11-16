@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- On streaming boxes and HDMI dongles (e.g. Shield, Chromecast, Onn), the TV Inputs pill is hidden -->
-    <bool name="show_inputs_pill">false</bool>
-</resources>

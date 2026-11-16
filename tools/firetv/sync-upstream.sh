@@ -22,7 +22,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 REMOTE="origin"
 BRANCH="main"
@@ -111,16 +111,16 @@ fi
 
 # 3. Propagate launcher changes to Fire TV targets
 echo -e "\n[3/5] Propagating launcher updates to Fire TV variants..."
-python3 "$REPO_ROOT/tools/firetv/sync_launchers.py"
+python3 "$SCRIPT_DIR/sync_launchers.py"
 
 # 4. Synchronize debloat profiles
 echo -e "\n[4/5] Synchronizing debloat profiles with upstream examples..."
-python3 "$REPO_ROOT/tools/firetv/sync_debloat.py"
+python3 "$SCRIPT_DIR/sync_debloat.py"
 
 # 5. Build verification
 if [ "$DO_BUILD" -eq 1 ]; then
     echo -e "\n[5/5] Rebuilding all 4 launcher variants to verify integrity..."
-    "$REPO_ROOT/tools/build-launcher.sh" all
+    "$SCRIPT_DIR/build-launcher.sh" all
     echo "All target APKs built and staged in dist/ successfully."
 else
     echo -e "\n[5/5] Build step skipped (--no-build)."
