@@ -32,9 +32,18 @@ build_generic_tv() {
 build_generic_box() {
     echo "==> Building CleanYourTV Generic Box (Streaming Box/Stick without HDMI Inputs)..."
     CONFIG="$REPO_ROOT/launcher/app/src/main/res/values/config.xml"
-    sed -i.bak 's/<bool name="show_inputs_pill">true<\/bool>/<bool name="show_inputs_pill">false<\/bool>/' "$CONFIG"
+    BACKUP="/tmp/cleanyourtv_config.xml.bak"
+    cp "$CONFIG" "$BACKUP"
+    trap 'mv "$BACKUP" "$CONFIG" 2>/dev/null || true' EXIT INT TERM
+    python3 -c "
+with open('$CONFIG', 'r', encoding='utf-8') as f:
+    c = f.read().replace('<bool name=\"show_inputs_pill\">true</bool>', '<bool name=\"show_inputs_pill\">false</bool>')
+with open('$CONFIG', 'w', encoding='utf-8') as f:
+    f.write(c)
+"
     (cd "$REPO_ROOT/launcher" && ./gradlew assembleRelease -q)
-    mv "${CONFIG}.bak" "$CONFIG"
+    mv "$BACKUP" "$CONFIG"
+    trap - EXIT INT TERM
     cp "$REPO_ROOT/launcher/app/build/outputs/apk/release/app-release.apk" "$REPO_ROOT/dist/cleanyourtv-generic-box.apk"
     echo "✓ Built: dist/cleanyourtv-generic-box.apk"
 }
