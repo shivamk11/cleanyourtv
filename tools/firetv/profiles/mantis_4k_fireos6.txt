@@ -11,6 +11,7 @@ com.amazon.device.logmanager
 com.amazon.device.metrics
 com.amazon.diode
 com.amazon.dp.logger
+com.amazon.logan
 com.amazon.metrics.api
 com.amazon.tv.developer.dataservice
 com.amazon.tv.fw.metrics
@@ -53,18 +54,22 @@ com.univision.android
 tv.pluto.android
 
 # --- Amazon Background Services & Unneeded Daemons ---
+com.amazon.aca
 com.amazon.aiondec
+com.amazon.alta.h2clientservice
+com.amazon.amasetup.service
+com.amazon.audiohome
 com.amazon.bueller.music
 com.amazon.bueller.photos
+com.amazon.cardinal
 com.amazon.cloud9
 com.amazon.csm.htmlruntime
 com.amazon.device.sale.service
-com.amazon.dummy.music
-com.amazon.firehomestarter
 com.amazon.franktvinput
 com.amazon.gamehub
 com.amazon.hedwig
 com.amazon.imdb.tv.android.app
+com.amazon.katoch
 com.amazon.livedeviceservice
 com.amazon.minerva.client.api
 com.amazon.minitv.android.app
@@ -76,6 +81,8 @@ com.amazon.providers.contentsupport
 com.amazon.recess
 com.amazon.shoptv.client
 com.amazon.shoptv.firetv.client
+com.amazon.stillwatching.activity
+com.amazon.storm.lightning.services
 com.amazon.storm.lightning.tutorial
 com.amazon.systemnotices
 com.amazon.tahoe
@@ -88,6 +95,7 @@ com.amazon.tv.website_launcher
 com.amazon.uxnotification
 com.amazon.whisperjoin.middleware.np
 com.amazon.whisperjoin.wss.wifiprovisioner
+com.amznfuse.operatorredirection
 com.android.printspooler
 com.imdb.livingroom.firetv
 
