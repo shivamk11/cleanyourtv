@@ -111,10 +111,20 @@ Things that bit us or contributors, so they don't bite you. Commands use `tools/
   (or 1926), the JointSpace API `tools/philips-api.py` reads.
 - **A cable to the computer gives no device in `adb devices`**: a TV's USB-A ports are usually host
   ports, for a drive, a keyboard or an Ethernet adapter, and the cable route in the bullet above needs
-  one that carries ADB device mode instead - the exception, as on the Xiaomi boxes below. On the GX655
-  the cable gave no device either, and the port scan above is the remaining check; with neither route a
-  firmware offers no way in, and there is nothing to disable on it. Every step here goes through the ADB
-  port, so a set is unchanged by these checks and no list is applied until `tools/tv.py --probe` answers.
+  one that carries ADB device mode instead - the exception, as on the Xiaomi boxes below. Which cable
+  matters: on the GX655 the first owner's gave no device, while a second owner of the same model and
+  Android version reported on 2026-11-19 that a **male-to-male USB-A** (A-to-A) cable to a Windows PC did
+  work - the TV raised its USB debugging authorisation prompt as soon as it was plugged in, `adb devices`
+  listed the set, and `adb tcpip 5555` from that session is what let the scripts run
+  ([that thread](https://github.com/Gathin23/cleanyourtv/issues/2930#issuecomment-7016611639)). An A-to-A
+  cable is also what opened the port on a Kodak 55CA0909, a different set that reports the same
+  `PTT1.181130.001` build ([its header](../examples/kodak-55ca0909/debloat.txt); plugged into the
+  computer directly, since a hub there reset the TV's USB configuration). So try one before concluding
+  that a firmware offers no way in (an A-to-A cable joins two USB power supplies: plug it straight into the
+  computer, no hub, and unplug it if no prompt appears; the port `adb tcpip 5555` opens lasts until the TV
+  reboots, so reboot it when you are done); the port scan above is the check after that, and with neither route
+  there is nothing to disable on that set. Every step here goes through the ADB port, so a set is
+  unchanged by these checks and no list is applied until `tools/tv.py --probe` answers.
 - **USB devices go dead while USB debugging is on**, seen on the Xiaomi Mi Box S and the Xiaomi TV
   Box S 3rd gen ([MiTV-AFMU0, Google TV 14](https://github.com/Gathin23/cleanyourtv/issues/737)):
   their firmware switches the USB port to ADB device mode, which cuts the power to a USB speaker or
@@ -714,6 +724,21 @@ Things that bit us or contributors, so they don't bite you. Commands use `tools/
   package` is missing (Android 6 and older, where that command does not exist) and warns when neither
   answers. That warning means the guard did not run, not that the list is safe. Without ADB and
   without a vendor recovery image, a set stuck this way is still out of reach.
+- **The TV and the set-top box on its HDMI input restart together after the print spooler is
+  disabled**, seen once, on a Sony BRAVIA 2015 (KDL-43W807C, platform `SVP-DTV15`, Android 7.0,
+  API 24, build `SVPDTV15_EU-user 7.0 NRD91N.S34 5.433 release-keys`,
+  [#3504](https://github.com/Gathin23/cleanyourtv/issues/3504)). The owner had
+  `com.android.printspooler` in the batch he applied and, as he put it, disabling it "caused a device
+  (a Pepephone set-top box) to restart both the TV and the set-top box itself". The package is
+  suspected rather than shown: the report carries the set's installed-app inventory and no `logcat`,
+  so neither the batch nor what preceded it is recorded. A set that restarts signals its power
+  changes on the CEC line, and a box set to follow the TV's power goes down and comes back with it,
+  which is the reading to check first - `logcat -b all` around one
+  `pm disable-user --user 0 com.android.printspooler`, and the box's own log for `CEC` in the same
+  seconds. `pm enable com.android.printspooler` puts the package back, one command per package. Many
+  lists here carry the line (`grep -l '^com.android.printspooler' examples/*/debloat*.txt` prints the
+  current set) and this is the only report of a side effect, so on a set with a box, a soundbar or a
+  console on its HDMI ports the line is a choice to make rather than free space.
 - **China-market Xiaomi rejects a default Home despite `set-home-activity` reporting success**,
   verified on MiTV-AETP0 (dofus), Android 9, firmware 22.9.2.851: the framework filters third-party
   HOME candidates by a package-name allowlist. Disabling the stock launcher then selects
@@ -1690,6 +1715,34 @@ with the real remote. An `input:com.tcl.channelplus/com.tcl.iptv.service.InputSe
 this one with `tools/tv.py 'logcat -d -v time | grep TclKeyLayoutMap'` while pressing it — `getevent` alone shows
 every TCL remote key as `KEY_UNKNOWN`.
 
+## The TV key does nothing, and TCL's own EPG service answers it (TCL Android TV 11)
+
+**Seen on:** a TCL 40S5400A (`C06`, product `C06_2K_GB`, Android TV 11, build `AR2101` / `AR21`, TCL software
+`V8-T221T05-LF1V361`) with the stock `com.google.android.tvlauncher` disabled and the launcher here as Home, no
+accessibility service bound, and the IR remote `TCL_RC902V_U1`
+([#4282](https://github.com/Gathin23/cleanyourtv/issues/4282)).
+
+The TV key did nothing on Home and Live TV did not open. It is the symptom of the Google TV set above through a
+different chain: on this board `getevent` names the press `KEY_EPG` (every key of that set's remote came back
+`KEY_UNKNOWN` instead), `TclKeyLayoutMap` maps it to keycode **4001**, and TCL's EPG handler answers it and
+stops - it starts `com.tcl.tv/.service.GlobalKeyService`, logs `processKeyCode: keyCode = 4001`, then:
+
+```
+startEpg: topActivityName = com.gathin.tvhome.MainActivity isSpecialScene = false
+startEpg: current is not Freeview Play
+```
+
+So the key is not dropped for want of a target: the guide is started only while Live TV is already in front, and
+on Home there is nothing for it to open. Read `startEpg` first, with
+`tools/tv.py 'logcat -d -v time | grep -i startEpg'` right after the press - that line is what tells this board
+apart from the `TclShortCutKeyManager` one above, which takes the key before any window sees it.
+
+**Fix:** on this unit a Key Mapper rule on key code 4001, action "Launch app" `com.tcl.tv`, with "Don't override
+default action" left on, so the guide still opens inside Live TV. `app_keys` was not tried here, because no key
+helper was bound, so the route the entry above documents is untested on this board rather than ruled out. Whether
+the stock launcher opened Live TV on this key could not be checked after the swap, so a launcher that handles
+keycode 4001 on Home is a request in that issue, not a regression fixed here.
+
 ## The Inputs list shows the empty HDMI 1 as connected, and a device on HDMI 2 nowhere (TCL UnionTV)
 
 **Seen on:** a TCL UnionTV (`ro.product.model` UnionTV, Android 9, `PPR2.180905.006.A1`), with the launcher as
@@ -2597,3 +2650,49 @@ always reports `mPlugType=1` (`BatteryManager.BATTERY_PLUGGED_AC` in `dumpsys po
 ```sh
 tools/tv.py 'settings put global stay_on_while_plugged_in 0'
 ```
+
+## The TV boots to a blank Home: no launcher answers, and FallbackHome draws nothing
+
+**Seen on:** a Next NEK7 (MECOOL/Amlogic, Android TV 9, SDK 28, `V9.20221214.151020`).
+
+With the enabled Home disabled or unable to start, Android hands Home to
+`com.android.tv.settings/.system.FallbackHome`. On this firmware that activity draws nothing: the screen stayed a
+plain dark panel, `uiautomator dump` returned an empty `FrameLayout` with no children, and no key brought
+anything up. ADB kept working, which is the way back.
+
+Ask the TV which apps answer Home, and check whether the stock fallback is a real launcher or a stub:
+
+```sh
+tools/tv.py 'cmd package query-activities -a android.intent.action.MAIN -c android.intent.category.HOME'
+tools/tv.py 'dumpsys package com.google.android.leanbacklauncher | grep -E "User 0:|enabled="'
+```
+
+A stock launcher that stays out of that list can still be installed and enabled. On the NEK7 the
+`LeanbackLauncher.apk` in `/system/priv-app` is 604 KB with no activities at all: `pm enable` answers
+`new state: enabled` and `dumpsys package` says `enabled=1`, and Home still never goes there. Pull the APK and
+count the activities:
+
+```sh
+adb pull /system/priv-app/LeanbackLauncher/LeanbackLauncher.apk
+$ANDROID_HOME/build-tools/34.0.0/aapt2 dump xmltree --file AndroidManifest.xml LeanbackLauncher.apk | grep -c 'E: activity'
+# 0
+$ANDROID_HOME/build-tools/34.0.0/aapt dump badging LeanbackLauncher.apk | head -1
+# package: name='com.google.android.leanbacklauncher' versionCode='1901105100' ... with no launchable-activity
+```
+
+Recovery, with no reboot needed:
+
+```sh
+tools/tv.py 'pm enable --user 0 <launcher package>'
+tools/tv.py 'am start -a android.intent.action.MAIN -c android.intent.category.HOME'
+```
+
+FallbackHome finishes itself within seconds of a real Home being enabled, and the stored Home preference
+survives a disable/enable cycle, so the launcher answers the next Home press and comes back as default after a
+reboot. A launcher that only crashed needs none of this: Android restarts it on its own (`kill -9` left a new
+pid with the same Home focused seconds later).
+
+Keep one working Home enabled. `tools/disable.sh` already refuses to disable Home's owner while nothing else
+can answer Home, but the guard judges by the apps that answer Home, so a launcher and a stub that never answers
+look the same there: a second launcher installed and enabled, without being the default, is the cheap safety
+net (`pm enable` alone brings the real one back).
